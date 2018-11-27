@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 40px;
+        }
+    #myCanvas {
+        width: 100%;
+        height: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas"></canvas>
+    <script>
+      function CreateCanvas() {
+        var canvas = document.getElementById("myCanvas"); // in your HTML this element appears as <canvas id="myCanvas"></canvas>
+        var ctx = canvas.getContext("2d");
+        const funcList = ["fillRect"];
+        const proxyCtx = new Proxy(ctx,{
+            get(target, property) {
+              if (funcList.includes(property)) {
+                return function(...args) {
+                  target[property](...args.map(item => item * 2));
+                };
+              }
+            },
+            set(target, property, value) {
+              target[property] = value;
+            }
+          }
+        );
+        return proxyCtx;
+      };
+      const ctx = CreateCanvas();
+      ctx.fillStyle = "rgb(200,0,0)"; // sets the color to fill in the rectangle with
+      ctx.fillRect(10, 10, 55, 50); // draws the rectangle at position 10, 10 with a width of 55 and a height of 50
+    </script>
+  </body>
+</html>
